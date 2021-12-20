@@ -1,0 +1,10 @@
+name: SkinsRestorer582Fix
+version: ${version}
+api-version: 1.13
+description: "A workaround for issue #582 of SkinsRestorerX"
+author: Javapony
+
+main: ru.windcorp.skinsrestorer582fix.SkinsRestorer582FixPlugin
+  
+depends:
+  - SkinsRestorer

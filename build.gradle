@@ -1,0 +1,63 @@
+plugins {
+    // Apply the application plugin to add support for building a CLI application in Java.
+    id 'application'
+    id 'java'
+}
+
+version = '1.0'
+
+repositories {
+	maven {
+		url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+		
+		// As of Gradle 5.1, you can limit this to only those
+		// dependencies you expect from it
+		content {
+			includeGroup 'org.bukkit'
+			includeGroup 'org.spigotmc'
+		}
+	}
+	/*
+	 As Spigot-API depends on the Bungeecord ChatComponent-API,
+	we need to add the Sonatype OSS repository, as Gradle,
+	in comparison to maven, doesn't want to understand the ~/.m2
+	directory unless added using mavenLocal(). Maven usually just gets
+	it from there, as most people have run the BuildTools at least once.
+	This is therefore not needed if you're using the full Spigot/CraftBukkit,
+	or if you're using the Bukkit API.
+	*/
+	maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+	maven { url = 'https://oss.sonatype.org/content/repositories/central' }
+	mavenLocal() // This is needed for CraftBukkit and Spigot.*/
+}
+
+dependencies {
+	implementation 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT'
+}
+
+processResources {
+	filesMatching(['plugin.yml']) {
+        expand('version': version)
+    }
+}
+
+java {
+    /*
+     * We're Java 8 for now.
+     * Why? As of 2020, most users have Oracle Java, which only supports Java 8.
+     */
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+compileJava {
+    /*
+     * We want to compile for Java 8.
+     * If we are using JDK 8, no further action is required.
+     * However, on JDK 9 and later versions, '--release' option is required,
+     * which is missing on JDK 8.
+     */
+    if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
+        options.compilerArgs.addAll(['--release', '8'])
+    }
+}
